@@ -63,8 +63,8 @@ jobs:
           server_port: 587
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_PASSWORD }}
-          to: divijs75@gmail.com, divyanshbisht2005@gmail.com
-          from: akashsah2003@gmail.com
+          to: divijs75@gmail.com, divyanshbisht2005@gmail.com, akashsah2003@gmail.com
+          from: divyanshbisht2005@gmail.com
           subject: "Latest security reports"
           body: Please find the latest security reports
           attachments: ${{ github.workspace }}/sbom.pdf,  ${{ github.workspace }}/sbomv.pdf, ${{ github.workspace }}/vulRep.pdf
