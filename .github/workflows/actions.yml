@@ -49,7 +49,7 @@ jobs:
     - name: Install Dependency
       run: |
         sudo apt-get install -y xvfb wkhtmltopdf
-       - name: Generate PDF
+    - name: Generate PDF
       run: |
         xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbom.html" "${{ github.workspace }}/sbom.pdf"
         xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbomv.html" "${{ github.workspace }}/sbomv.pdf"
