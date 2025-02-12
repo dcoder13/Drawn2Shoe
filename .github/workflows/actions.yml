@@ -47,15 +47,13 @@ jobs:
         name: vulRep-${{ github.run_id }}-${{ github.run_number }}.html
         path: ${{ github.workspace }}/vulRep.html
     - name: Install Dependency
-      run: sudo apt-get install wkhtmltopdf
-    - name: Generate pdf
       run: |
-        echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom.json)</pre></body></html>" > ${{ github.workspace }}/sbom.html
-        xvfb-run wkhtmltopdf ${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
-        echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom.vdr.json)</pre></body></html>" > ${{ github.workspace }}/sbomv.html
-        xvfb-run wkhtmltopdf ${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
-        cat ${{ github.workspace }}/vulRep.html
-        xvfb-run wkhtmltopdf ${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
+        sudo apt-get install -y xvfb wkhtmltopdf
+    - name: Generate PDF
+      run: |
+        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
+        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
+        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
     - name: Mail Reports
       uses: dawidd6/action-send-mail@v3
       with:
