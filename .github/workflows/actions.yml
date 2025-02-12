@@ -50,19 +50,18 @@ jobs:
       run: ls -lah ${{ github.workspace }}/
     - name: Install Dependency
       run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb wkhtmltopdf
+        sudo apt-get install -y wkhtmltopdf
     - name: Generate PDF
       run: |
         cat ${{ github.workspace }}/sbom.json | jq '.' > ${{ github.workspace }}/sbom_pretty.json
         echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbom.html
-        xvfb-run wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
+        wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
 
         cat ${{ github.workspace }}/sbom.vdr.json | jq '.' > ${{ github.workspace }}/sbomv_pretty.json
         echo "<html><body><pre>$(cat ${{ github.workspace }}/sbomv_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbomv.html
-        xvfb-run wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
+        wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
 
-        xvfb-run wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
+        wkhtmltopdf --enable-local-file-access file://${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
     - name: Mail Reports
       uses: dawidd6/action-send-mail@v3
       with:
