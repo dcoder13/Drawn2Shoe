@@ -115,10 +115,6 @@ After completing these steps, you should have the Drawn2Shoe application up and 
 
 We welcome contributions to Drawn2Shoe! Please refer to our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on how you can get involved.
 
-## 👥Maintainers
-
--   [**Divij Sharma**](https://github.com/dvjsharma) 
--   [**Shashank Shekhar**](https://github.com/ShashankShekhar07) 
 
 ## 📜License
 
