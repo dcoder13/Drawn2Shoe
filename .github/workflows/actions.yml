@@ -49,11 +49,11 @@ jobs:
     - name: Install Dependency
       run: |
         sudo apt-get install -y xvfb wkhtmltopdf
-    - name: Generate PDF
+       - name: Generate PDF
       run: |
-        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
-        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
-        xvfb-run wkhtmltopdf --enable-local-file-access ${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
+        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbom.html" "${{ github.workspace }}/sbom.pdf"
+        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbomv.html" "${{ github.workspace }}/sbomv.pdf"
+        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/vulRep.html" "${{ github.workspace }}/vulRep.pdf"
     - name: Mail Reports
       uses: dawidd6/action-send-mail@v3
       with:
