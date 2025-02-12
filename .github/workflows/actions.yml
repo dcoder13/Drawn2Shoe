@@ -32,28 +32,30 @@ jobs:
         # jq . ${{ github.workspace }}/sbom.json
         depscan --bom ${{ github.workspace }}/sbom.json -o ${{ github.workspace }}/vulRep.html
     - name: Upload SBOM
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: sbom-${{ github.run_id }}-${{ github.run_number }}.json
         path: ${{ github.workspace }}/sbom.json
     - name: Upload vdr
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: vulRep-${{ github.run_id }}-${{ github.run_number }}.vdr.json
         path: ${{ github.workspace }}/sbom.vdr.json
     - name: Upload html
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: vulRep-${{ github.run_id }}-${{ github.run_number }}.html
         path: ${{ github.workspace }}/vulRep.html
     - name: Install Dependency
+      run: sudo apt-get install wkhtmltopdf
+    - name: Generate pdf
       run: |
-        sudo apt-get install -y xvfb wkhtmltopdf
-    - name: Generate PDF
-      run: |
-        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbom.html" "${{ github.workspace }}/sbom.pdf"
-        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/sbomv.html" "${{ github.workspace }}/sbomv.pdf"
-        xvfb-run wkhtmltopdf --enable-local-file-access "file:///${{ github.workspace }}/vulRep.html" "${{ github.workspace }}/vulRep.pdf"
+        echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom.json)</pre></body></html>" > ${{ github.workspace }}/sbom.html
+        wkhtmltopdf ${{ github.workspace }}/sbom.html ${{ github.workspace }}/sbom.pdf
+        echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom.vdr.json)</pre></body></html>" > ${{ github.workspace }}/sbomv.html
+        wkhtmltopdf ${{ github.workspace }}/sbomv.html ${{ github.workspace }}/sbomv.pdf
+        cat ${{ github.workspace }}/vulRep.html
+        wkhtmltopdf ${{ github.workspace }}/vulRep.html ${{ github.workspace }}/vulRep.pdf
     - name: Mail Reports
       uses: dawidd6/action-send-mail@v3
       with:
@@ -61,7 +63,7 @@ jobs:
           server_port: 587
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_PASSWORD }}
-          to: divyanshbisht2005@gmail.com
+          to: divijs75@gmail.com, divyanshbisht2005@gmail.com, akashsah2003@gmail.com
           from: divyanshbisht2005@gmail.com
           subject: "Latest security reports"
           body: Please find the latest security reports
