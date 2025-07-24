@@ -48,35 +48,66 @@ jobs:
         path: ${{ github.workspace }}/vulRep.html
     - name: Debug File Paths
       run: ls -lah ${{ github.workspace }}/
-    - name: Install Dependency
-      run: |
-        sudo apt-get install -y wkhtmltopdf
-    - name: Generate PDFs
-      run: |
-        if [ -f "${{ github.workspace }}/sbom.json" ]; then
-          cat ${{ github.workspace }}/sbom.json | jq '.' > ${{ github.workspace }}/sbom_pretty.json
-          echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbom.html
-          # Removed --enable-local-file-access as it's just a local file
-          wkhtmltopdf "${{ github.workspace }}/sbom.html" "${{ github.workspace }}/sbom.pdf"
-        else
-          echo "sbom.json not found, skipping SBOM PDF generation."
-        fi
+    - name: Mail Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.GMAIL_USERNAME }}
+        password: ${{ secrets.GMAIL_PASSWORD }}
+        to: divijs75@gmail.com, divyanshbisht2005@gmail.com, akashsah2003@gmail.com
+        from: divyanshbisht2005@gmail.com
+        subject: "Security Report Generation Complete for ${{ github.repository }}"
+        body: |
+          Hello,
+
+          A new security report has been generated for the repository: `${{ github.repository }}`.
+
+          **Details:**
+          - Workflow Run ID: `${{ github.run_id }}`
+          - Workflow Run Number: `${{ github.run_number }}`
+          - Commit SHA: `${{ github.sha }}`
+          - Branch: `${{ github.ref_name }}`
+          - Generated At: $(date)
+
+          The following artifacts have been uploaded to this workflow run and can be downloaded from the "Summary" tab of the workflow run on GitHub:
+          - SBOM (Software Bill of Materials): `sbom-${{ github.run_id }}-${{ github.run_number }}.json`
+          - Vulnerability Disclosure Report (if generated): `vulRep-${{ github.run_id }}-${{ github.run_number }}.vdr.json`
+          - HTML Vulnerability Report: `vulRep-${{ github.run_id }}-${{ github.run_number }}.html`
+
+          Please log in to SBOMgen dashboard or GitHub to review the generated reports.
+
+          Best regards,
+          SBOMGen
+    # - name: Install Dependency
+    #   run: |
+    #     sudo apt-get install -y wkhtmltopdf
+    # - name: Generate PDFs
+    #   run: |
+    #     if [ -f "${{ github.workspace }}/sbom.json" ]; then
+    #       cat ${{ github.workspace }}/sbom.json | jq '.' > ${{ github.workspace }}/sbom_pretty.json
+    #       echo "<html><body><pre>$(cat ${{ github.workspace }}/sbom_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbom.html
+    #       # Removed --enable-local-file-access as it's just a local file
+    #       wkhtmltopdf "${{ github.workspace }}/sbom.html" "${{ github.workspace }}/sbom.pdf"
+    #     else
+    #       echo "sbom.json not found, skipping SBOM PDF generation."
+    #     fi
     
-        if [ -f "${{ github.workspace }}/sbom.vdr.json" ]; then
-          cat ${{ github.workspace }}/sbom.vdr.json | jq '.' > ${{ github.workspace }}/sbomv_pretty.json
-          echo "<html><body><pre>$(cat ${{ github.workspace }}/sbomv_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbomv.html
-          wkhtmltopdf "${{ github.workspace }}/sbomv.html" "${{ github.workspace }}/sbomv.pdf"
-        else
-          echo "sbom.vdr.json not found, skipping VDR PDF generation."
-          touch ${{ github.workspace }}/sbomv.pdf
-        fi
+    #     if [ -f "${{ github.workspace }}/sbom.vdr.json" ]; then
+    #       cat ${{ github.workspace }}/sbom.vdr.json | jq '.' > ${{ github.workspace }}/sbomv_pretty.json
+    #       echo "<html><body><pre>$(cat ${{ github.workspace }}/sbomv_pretty.json)</pre></body></html>" > ${{ github.workspace }}/sbomv.html
+    #       wkhtmltopdf "${{ github.workspace }}/sbomv.html" "${{ github.workspace }}/sbomv.pdf"
+    #     else
+    #       echo "sbom.vdr.json not found, skipping VDR PDF generation."
+    #       touch ${{ github.workspace }}/sbomv.pdf
+    #     fi
     
-        if [ -f "${{ github.workspace }}/vulRep.html" ]; then
-          wkhtmltopdf --disable-javascript --enable-local-file-access "${{ github.workspace }}/vulRep.html" "${{ github.workspace }}/vulRep.pdf"
-        else
-          echo "vulRep.html not found, skipping HTML report PDF generation."
-          touch ${{ github.workspace }}/vulRep.pdf
-        fi
+    #     if [ -f "${{ github.workspace }}/vulRep.html" ]; then
+    #       wkhtmltopdf --disable-javascript --enable-local-file-access "${{ github.workspace }}/vulRep.html" "${{ github.workspace }}/vulRep.pdf"
+    #     else
+    #       echo "vulRep.html not found, skipping HTML report PDF generation."
+    #       touch ${{ github.workspace }}/vulRep.pdf
+    #     fi
 
     # - name: Mail Reports
     #   uses: dawidd6/action-send-mail@v3
