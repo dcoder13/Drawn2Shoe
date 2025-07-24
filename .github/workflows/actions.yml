@@ -55,30 +55,40 @@ jobs:
         server_port: 587
         username: ${{ secrets.GMAIL_USERNAME }}
         password: ${{ secrets.GMAIL_PASSWORD }}
-        to: divijs75@gmail.com, divyanshbisht2005@gmail.com, akashsah2003@gmail.com
+        to: divyanshbisht2005@gmail.com
         from: divyanshbisht2005@gmail.com
-        subject: "Security Report Generation Complete for ${{ github.repository }}"
+        subject: "Security Report Generated: ${{ github.repository }} - Run #${{ github.run_number }}"
+        content_type: html
         body: |
-          Hello,
+          <html>
+          <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <p>Hello,</p>
+            <p>A new security report has been generated for the repository: <strong><code>${{ github.repository }}</code></strong>.</p>
 
-          A new security report has been generated for the repository: `${{ github.repository }}`.
+            <h3>Details:</h3>
+            <ul>
+              <li><strong>Workflow Run ID:</strong> <code>${{ github.run_id }}</code></li>
+              <li><strong>Workflow Run Number:</strong> <code>${{ github.run_number }}</code></li>
+              <li><strong>Commit SHA:</strong> <code>${{ github.sha }}</code></li>
+              <li><strong>Branch:</strong> <code>${{ github.ref_name }}</code></li>
+              <li><strong>Generated At:</strong> <code>${{ format('{0:yyyy-MM-dd HH:mm:ss z}', github.event.repository.pushed_at) }}</code></li>
+            </ul>
 
-          **Details:**
-          - Workflow Run ID: `${{ github.run_id }}`
-          - Workflow Run Number: `${{ github.run_number }}`
-          - Commit SHA: `${{ github.sha }}`
-          - Branch: `${{ github.ref_name }}`
-          - Generated At: $(date)
+            <p>The following artifacts have been uploaded to this workflow run and can
+            be downloaded from the "Summary" tab of the workflow run on GitHub:</p>
 
-          The following artifacts have been uploaded to this workflow run and can be downloaded from the "Summary" tab of the workflow run on GitHub:
-          - SBOM (Software Bill of Materials): `sbom-${{ github.run_id }}-${{ github.run_number }}.json`
-          - Vulnerability Disclosure Report (if generated): `vulRep-${{ github.run_id }}-${{ github.run_number }}.vdr.json`
-          - HTML Vulnerability Report: `vulRep-${{ github.run_id }}-${{ github.run_number }}.html`
+            <ul>
+              <li><strong>SBOM (Software Bill of Materials):</strong> <code>sbom-${{ github.run_id }}-${{ github.run_number }}.json</code></li>
+              <li><strong>Vulnerability Disclosure Report (if generated):</strong> <code>vulRep-${{ github.run_id }}-${{ github.run_number }}.vdr.json</code></li>
+              <li><strong>HTML Vulnerability Report:</strong> <code>vulRep-${{ github.run_id }}-${{ github.run_number }}.html</code></li>
+            </ul>
 
-          Please log in to SBOMgen dashboard or GitHub to review the generated reports.
+            <p>Please log in to SBOMGen or <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">GitHub</a> to review the generated reports.</p>
 
-          Best regards,
-          SBOMGen
+            <p>Best regards,<br>
+            Team SBOMGen</p>
+          </body>
+          </html>
     # - name: Install Dependency
     #   run: |
     #     sudo apt-get install -y wkhtmltopdf
