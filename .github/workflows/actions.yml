@@ -48,6 +48,10 @@ jobs:
         path: ${{ github.workspace }}/vulRep.html
     - name: Debug File Paths
       run: ls -lah ${{ github.workspace }}/
+    - name: Current Date and Time
+      id: date
+      run: echo "current_date=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_OUTPUT
+
     - name: Mail Notification
       uses: dawidd6/action-send-mail@v3
       with:
@@ -71,7 +75,7 @@ jobs:
               <li><strong>Workflow Run Number:</strong> <code>${{ github.run_number }}</code></li>
               <li><strong>Commit SHA:</strong> <code>${{ github.sha }}</code></li>
               <li><strong>Branch:</strong> <code>${{ github.ref_name }}</code></li>
-              <li><strong>Generated At:</strong> <code>${{ format('{0:yyyy-MM-dd HH:mm:ss z}', github.event.repository.pushed_at) }}</code></li>
+              <li><strong>Generated At:</strong><code>${{ steps.date.outputs.current_date }}</code></li>
             </ul>
 
             <p>The following artifacts have been uploaded to this workflow run and can
