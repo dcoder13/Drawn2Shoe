@@ -62,8 +62,7 @@ jobs:
         to: divyanshbisht2005@gmail.com
         from: divyanshbisht2005@gmail.com
         subject: "Security Report Generated: ${{ github.repository }} - Run #${{ github.run_number }}"
-        content_type: html
-        body: |
+        html_body: |
           <html>
           <body style="font-family: Arial, sans-serif; line-height: 1.6;">
             <p>Hello,</p>
